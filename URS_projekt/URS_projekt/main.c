@@ -5,12 +5,15 @@
 
 int main()
 {
-	DDRA = 0xff;
-	//PORTA = 0;
-	//_delay_ms(1000);
+	//
+	//	UBRR = 4800
+	//	ODD PARITY
+	//  7 BIT TRANSFER
+	//  2 STOP BITS
+	//
 	int i = 0;
 	unsigned int ubrr = 95;
-	unsigned char data[] = "c";
+	unsigned char data[] = "IDE GAS!!!!! ";
 	
 	UBRRH = (ubrr>>8);
 	UBRRL = (ubrr);  
@@ -35,7 +38,7 @@ int main()
 		//UDR = '\r';
 		
 		
-		_delay_ms(1000);
+		_delay_ms(1);
 	}
 	
 }
