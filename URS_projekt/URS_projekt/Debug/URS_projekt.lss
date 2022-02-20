@@ -3,29 +3,29 @@ URS_projekt.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         0000017c  00000000  00000000  00000074  2**1
+  0 .text         000000fc  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000004  00800060  0000017c  000001f0  2**0
+  1 .data         00000006  00800060  000000fc  00000170  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  000001f4  2**0
+  2 .comment      00000030  00000000  00000000  00000176  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000224  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001a8  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000040  00000000  00000000  00000260  2**0
+  4 .debug_aranges 00000020  00000000  00000000  000001e4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000072b  00000000  00000000  000002a0  2**0
+  5 .debug_info   0000067a  00000000  00000000  00000204  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000066c  00000000  00000000  000009cb  2**0
+  6 .debug_abbrev 000005eb  00000000  00000000  0000087e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002d5  00000000  00000000  00001037  2**0
+  7 .debug_line   00000283  00000000  00000000  00000e69  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000074  00000000  00000000  0000130c  2**2
+  8 .debug_frame  00000034  00000000  00000000  000010ec  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000379  00000000  00000000  00001380  2**0
+  9 .debug_str    0000034b  00000000  00000000  00001120  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000bd  00000000  00000000  000016f9  2**0
+ 10 .debug_loc    0000006c  00000000  00000000  0000146b  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000030  00000000  00000000  000017b6  2**0
+ 11 .debug_ranges 00000010  00000000  00000000  000014d7  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -65,204 +65,128 @@ Disassembly of section .text:
   60:	10 e0       	ldi	r17, 0x00	; 0
   62:	a0 e6       	ldi	r26, 0x60	; 96
   64:	b0 e0       	ldi	r27, 0x00	; 0
-  66:	ec e7       	ldi	r30, 0x7C	; 124
-  68:	f1 e0       	ldi	r31, 0x01	; 1
+  66:	ec ef       	ldi	r30, 0xFC	; 252
+  68:	f0 e0       	ldi	r31, 0x00	; 0
   6a:	02 c0       	rjmp	.+4      	; 0x70 <__do_copy_data+0x10>
   6c:	05 90       	lpm	r0, Z+
   6e:	0d 92       	st	X+, r0
-  70:	a4 36       	cpi	r26, 0x64	; 100
+  70:	a6 36       	cpi	r26, 0x66	; 102
   72:	b1 07       	cpc	r27, r17
   74:	d9 f7       	brne	.-10     	; 0x6c <__do_copy_data+0xc>
-  76:	0e 94 86 00 	call	0x10c	; 0x10c <main>
-  7a:	0c 94 bc 00 	jmp	0x178	; 0x178 <_exit>
+  76:	0e 94 41 00 	call	0x82	; 0x82 <main>
+  7a:	0c 94 7c 00 	jmp	0xf8	; 0xf8 <_exit>
 
 0000007e <__bad_interrupt>:
   7e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000082 <UART_init>:
-
-unsigned char UART_RxChar()
-{
-	while ((UCSRA & (1 << RXC)) == 0);/* Wait till data is received */
-	return(UDR);			/* Return the byte*/
-}
-  82:	2a b1       	in	r18, 0x0a	; 10
-  84:	28 61       	ori	r18, 0x18	; 24
-  86:	2a b9       	out	0x0a, r18	; 10
-  88:	20 b5       	in	r18, 0x20	; 32
-  8a:	26 68       	ori	r18, 0x86	; 134
-  8c:	20 bd       	out	0x20, r18	; 32
-  8e:	dc 01       	movw	r26, r24
-  90:	cb 01       	movw	r24, r22
-  92:	88 0f       	add	r24, r24
-  94:	99 1f       	adc	r25, r25
-  96:	aa 1f       	adc	r26, r26
-  98:	bb 1f       	adc	r27, r27
-  9a:	88 0f       	add	r24, r24
-  9c:	99 1f       	adc	r25, r25
-  9e:	aa 1f       	adc	r26, r26
-  a0:	bb 1f       	adc	r27, r27
-  a2:	9c 01       	movw	r18, r24
-  a4:	ad 01       	movw	r20, r26
-  a6:	22 0f       	add	r18, r18
-  a8:	33 1f       	adc	r19, r19
-  aa:	44 1f       	adc	r20, r20
-  ac:	55 1f       	adc	r21, r21
-  ae:	22 0f       	add	r18, r18
-  b0:	33 1f       	adc	r19, r19
-  b2:	44 1f       	adc	r20, r20
-  b4:	55 1f       	adc	r21, r21
-  b6:	60 e0       	ldi	r22, 0x00	; 0
-  b8:	70 e8       	ldi	r23, 0x80	; 128
-  ba:	80 e7       	ldi	r24, 0x70	; 112
-  bc:	90 e0       	ldi	r25, 0x00	; 0
-  be:	0e 94 9a 00 	call	0x134	; 0x134 <__udivmodsi4>
-  c2:	8f ef       	ldi	r24, 0xFF	; 255
-  c4:	82 0f       	add	r24, r18
-  c6:	89 b9       	out	0x09, r24	; 9
-  c8:	da 01       	movw	r26, r20
-  ca:	c9 01       	movw	r24, r18
-  cc:	01 97       	sbiw	r24, 0x01	; 1
-  ce:	a1 09       	sbc	r26, r1
-  d0:	b1 09       	sbc	r27, r1
-  d2:	89 2f       	mov	r24, r25
-  d4:	9a 2f       	mov	r25, r26
-  d6:	ab 2f       	mov	r26, r27
-  d8:	bb 27       	eor	r27, r27
-  da:	80 bd       	out	0x20, r24	; 32
-  dc:	08 95       	ret
-
-000000de <UART_TxChar>:
-
-void UART_TxChar(char ch)
-{
-	while (! (UCSRA & (1<<UDRE)));	/* Wait for empty transmit buffer*/
-  de:	5d 9b       	sbis	0x0b, 5	; 11
-  e0:	fe cf       	rjmp	.-4      	; 0xde <UART_TxChar>
-	UDR = ch ;
-  e2:	8c b9       	out	0x0c, r24	; 12
-  e4:	08 95       	ret
-
-000000e6 <UART_SendString>:
-}
-
-void UART_SendString(char *str)
-{
-  e6:	0f 93       	push	r16
-  e8:	1f 93       	push	r17
-  ea:	cf 93       	push	r28
-  ec:	8c 01       	movw	r16, r24
-	uint8_t j=0;
-  ee:	c0 e0       	ldi	r28, 0x00	; 0
-	
-	while (str[j]!=0)		/* Send string till null */
-  f0:	03 c0       	rjmp	.+6      	; 0xf8 <UART_SendString+0x12>
-	{
-		UART_TxChar(str[j]);	
-  f2:	0e 94 6f 00 	call	0xde	; 0xde <UART_TxChar>
-		j++;
-  f6:	cf 5f       	subi	r28, 0xFF	; 255
-
-void UART_SendString(char *str)
-{
-	uint8_t j=0;
-	
-	while (str[j]!=0)		/* Send string till null */
-  f8:	f8 01       	movw	r30, r16
-  fa:	ec 0f       	add	r30, r28
-  fc:	f1 1d       	adc	r31, r1
-  fe:	80 81       	ld	r24, Z
- 100:	81 11       	cpse	r24, r1
- 102:	f7 cf       	rjmp	.-18     	; 0xf2 <UART_SendString+0xc>
-	{
-		UART_TxChar(str[j]);	
-		j++;
-	}
-}
- 104:	cf 91       	pop	r28
- 106:	1f 91       	pop	r17
- 108:	0f 91       	pop	r16
- 10a:	08 95       	ret
-
-0000010c <main>:
+00000082 <main>:
+#include <stdint.h>
+#include <avr/io.h>
+#include <util/delay.h>
 
 int main()
 {
-	//char c;
-	UART_init(4800);
- 10c:	60 ec       	ldi	r22, 0xC0	; 192
- 10e:	72 e1       	ldi	r23, 0x12	; 18
- 110:	80 e0       	ldi	r24, 0x00	; 0
- 112:	90 e0       	ldi	r25, 0x00	; 0
- 114:	0e 94 41 00 	call	0x82	; 0x82 <UART_init>
-	//UART_SendString("\n\t Echo Test ");	
-	while(1)
-	{
-		//c=UART_RxChar();
-		//UART_TxChar('c');
-		UART_SendString("Hi");
- 118:	80 e6       	ldi	r24, 0x60	; 96
- 11a:	90 e0       	ldi	r25, 0x00	; 0
- 11c:	0e 94 73 00 	call	0xe6	; 0xe6 <UART_SendString>
+  82:	cf 93       	push	r28
+  84:	df 93       	push	r29
+  86:	00 d0       	rcall	.+0      	; 0x88 <main+0x6>
+  88:	00 d0       	rcall	.+0      	; 0x8a <main+0x8>
+  8a:	1f 92       	push	r1
+  8c:	cd b7       	in	r28, 0x3d	; 61
+  8e:	de b7       	in	r29, 0x3e	; 62
+	int i = 0;
+	unsigned int ubrr = 23;
+	unsigned char data[] = "MMMM";
+  90:	85 e0       	ldi	r24, 0x05	; 5
+  92:	e0 e6       	ldi	r30, 0x60	; 96
+  94:	f0 e0       	ldi	r31, 0x00	; 0
+  96:	de 01       	movw	r26, r28
+  98:	11 96       	adiw	r26, 0x01	; 1
+  9a:	01 90       	ld	r0, Z+
+  9c:	0d 92       	st	X+, r0
+  9e:	8a 95       	dec	r24
+  a0:	e1 f7       	brne	.-8      	; 0x9a <main+0x18>
+	
+	UBRRH = (ubrr>>8); 
+  a2:	10 bc       	out	0x20, r1	; 32
+	UBRRL = (ubrr);    
+  a4:	87 e1       	ldi	r24, 0x17	; 23
+  a6:	89 b9       	out	0x09, r24	; 9
+	
+	UCSRC |= (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);       
+  a8:	80 b5       	in	r24, 0x20	; 32
+  aa:	86 68       	ori	r24, 0x86	; 134
+  ac:	80 bd       	out	0x20, r24	; 32
+	UCSRB |= (1 << TXEN); 
+  ae:	8a b1       	in	r24, 0x0a	; 10
+  b0:	88 60       	ori	r24, 0x08	; 8
+  b2:	8a b9       	out	0x0a, r24	; 10
+	
+	while(1) {
+		i = 0;
+  b4:	80 e0       	ldi	r24, 0x00	; 0
+  b6:	90 e0       	ldi	r25, 0x00	; 0
+		while(data[i] != 0) 
+  b8:	04 c0       	rjmp	.+8      	; 0xc2 <main+0x40>
+		{
+			while (!( UCSRA & (1<<UDRE))); 
+  ba:	5d 9b       	sbis	0x0b, 5	; 11
+  bc:	fe cf       	rjmp	.-4      	; 0xba <main+0x38>
+			
+			UDR = data[i];	
+  be:	2c b9       	out	0x0c, r18	; 12
+			i++;                             
+  c0:	01 96       	adiw	r24, 0x01	; 1
+	UCSRC |= (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0);       
+	UCSRB |= (1 << TXEN); 
+	
+	while(1) {
+		i = 0;
+		while(data[i] != 0) 
+  c2:	e1 e0       	ldi	r30, 0x01	; 1
+  c4:	f0 e0       	ldi	r31, 0x00	; 0
+  c6:	ec 0f       	add	r30, r28
+  c8:	fd 1f       	adc	r31, r29
+  ca:	e8 0f       	add	r30, r24
+  cc:	f9 1f       	adc	r31, r25
+  ce:	20 81       	ld	r18, Z
+  d0:	21 11       	cpse	r18, r1
+  d2:	f3 cf       	rjmp	.-26     	; 0xba <main+0x38>
+			
+			UDR = data[i];	
+			i++;                             
+		}
+		
+		while (!( UCSRA & (1<<UDRE)));   
+  d4:	5d 9b       	sbis	0x0b, 5	; 11
+  d6:	fe cf       	rjmp	.-4      	; 0xd4 <main+0x52>
+		UDR = '\n';			
+  d8:	8a e0       	ldi	r24, 0x0A	; 10
+  da:	8c b9       	out	0x0c, r24	; 12
+		while (!( UCSRA & (1<<UDRE))); 
+  dc:	5d 9b       	sbis	0x0b, 5	; 11
+  de:	fe cf       	rjmp	.-4      	; 0xdc <main+0x5a>
+		UDR = '\r';
+  e0:	8d e0       	ldi	r24, 0x0D	; 13
+  e2:	8c b9       	out	0x0c, r24	; 12
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 120:	2f ef       	ldi	r18, 0xFF	; 255
- 122:	8f e7       	ldi	r24, 0x7F	; 127
- 124:	96 e1       	ldi	r25, 0x16	; 22
- 126:	21 50       	subi	r18, 0x01	; 1
- 128:	80 40       	sbci	r24, 0x00	; 0
- 12a:	90 40       	sbci	r25, 0x00	; 0
- 12c:	e1 f7       	brne	.-8      	; 0x126 <main+0x1a>
- 12e:	00 c0       	rjmp	.+0      	; 0x130 <main+0x24>
- 130:	00 00       	nop
- 132:	f2 cf       	rjmp	.-28     	; 0x118 <main+0xc>
+  e4:	2f ef       	ldi	r18, 0xFF	; 255
+  e6:	8f e7       	ldi	r24, 0x7F	; 127
+  e8:	96 e1       	ldi	r25, 0x16	; 22
+  ea:	21 50       	subi	r18, 0x01	; 1
+  ec:	80 40       	sbci	r24, 0x00	; 0
+  ee:	90 40       	sbci	r25, 0x00	; 0
+  f0:	e1 f7       	brne	.-8      	; 0xea <main+0x68>
+  f2:	00 c0       	rjmp	.+0      	; 0xf4 <main+0x72>
+  f4:	00 00       	nop
+  f6:	de cf       	rjmp	.-68     	; 0xb4 <main+0x32>
 
-00000134 <__udivmodsi4>:
- 134:	a1 e2       	ldi	r26, 0x21	; 33
- 136:	1a 2e       	mov	r1, r26
- 138:	aa 1b       	sub	r26, r26
- 13a:	bb 1b       	sub	r27, r27
- 13c:	fd 01       	movw	r30, r26
- 13e:	0d c0       	rjmp	.+26     	; 0x15a <__udivmodsi4_ep>
+000000f8 <_exit>:
+  f8:	f8 94       	cli
 
-00000140 <__udivmodsi4_loop>:
- 140:	aa 1f       	adc	r26, r26
- 142:	bb 1f       	adc	r27, r27
- 144:	ee 1f       	adc	r30, r30
- 146:	ff 1f       	adc	r31, r31
- 148:	a2 17       	cp	r26, r18
- 14a:	b3 07       	cpc	r27, r19
- 14c:	e4 07       	cpc	r30, r20
- 14e:	f5 07       	cpc	r31, r21
- 150:	20 f0       	brcs	.+8      	; 0x15a <__udivmodsi4_ep>
- 152:	a2 1b       	sub	r26, r18
- 154:	b3 0b       	sbc	r27, r19
- 156:	e4 0b       	sbc	r30, r20
- 158:	f5 0b       	sbc	r31, r21
-
-0000015a <__udivmodsi4_ep>:
- 15a:	66 1f       	adc	r22, r22
- 15c:	77 1f       	adc	r23, r23
- 15e:	88 1f       	adc	r24, r24
- 160:	99 1f       	adc	r25, r25
- 162:	1a 94       	dec	r1
- 164:	69 f7       	brne	.-38     	; 0x140 <__udivmodsi4_loop>
- 166:	60 95       	com	r22
- 168:	70 95       	com	r23
- 16a:	80 95       	com	r24
- 16c:	90 95       	com	r25
- 16e:	9b 01       	movw	r18, r22
- 170:	ac 01       	movw	r20, r24
- 172:	bd 01       	movw	r22, r26
- 174:	cf 01       	movw	r24, r30
- 176:	08 95       	ret
-
-00000178 <_exit>:
- 178:	f8 94       	cli
-
-0000017a <__stop_program>:
- 17a:	ff cf       	rjmp	.-2      	; 0x17a <__stop_program>
+000000fa <__stop_program>:
+  fa:	ff cf       	rjmp	.-2      	; 0xfa <__stop_program>
