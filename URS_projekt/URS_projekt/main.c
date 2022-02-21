@@ -1,29 +1,16 @@
 #define F_CPU 7372800UL
 
-#include <stdint.h>
 #include <avr/io.h>
 #include <util/delay.h>
-#include <spi.h>
-#include <mfrc522.h>
+#include "usart.h"
+#include "spi.h"
+#include "mfrc522.h"
 #include <stdio.h>
-
-void writeUsart(char *str){
-	//unsigned char data[] = str;
-	int i = 0;
-	while(str[i] != 0)
-	{
-		while (!( UCSRA & (1<<UDRE)));
-		
-		UDR = str[i];
-		i++;
-	}
-	_delay_ms(10);
-}
 
 void usart_init(){
 	//	UBRR = 4800
 	//	ODD PARITY
-	//  6 BIT TRANSFER
+	//  7 BIT TRANSFER
 	//  2 STOP BITS
 	
 	unsigned int ubrr = 95;
@@ -35,49 +22,67 @@ void usart_init(){
 	UCSRB = (1 << TXEN) | (1 << RXEN);
 }
 
+void detectReaderVersion() {
+	//check version of the reader
+	uint8_t byte = mfrc522_read(VersionReg);
+	
+	if (byte == 0x92) {
+		usart_puts("Reader detected ");
+		usart_puts("MIFARE RC522 v2\n");
+
+		} else if (byte == 0x91 || byte==0x90) {
+		usart_puts("Reader detected ");
+		usart_puts("MIFARE RC522v1\n");
+		} else {
+		usart_puts("No reader found\n");
+		PORTA = byte;
+	}
+}
 
 int main()
 {
-	char stri[8];
 	uint8_t byte = 0;
-	uint8_t str[MAX_LEN];
+	uint8_t str[16];
+	// used for storing status after communication with the reader
+	uint8_t status;
+	
 	_delay_ms(50);
-	DDRA = 0xff;
-	usart_init();	
-	//writeUsart("1235");
-		
+	usart_init();
+	
 	spi_init();
-	//PORTA = ~SPCR;
-	_delay_ms(100);
+	_delay_ms(10);
 	
 	mfrc522_init();
+	_delay_ms(10);
 	
-	byte = mfrc522_read(VersionReg);
-	PORTA = byte;
-	if(byte == 0x92)
-	{
-		writeUsart("522:2");
-	}else if(byte == 0x91 || byte==0x90)
-	{
-		writeUsart("522:1");
-	}else
-	{
-		writeUsart("0101\n");
-	}
-	sprintf(stri, "%d", byte);
-	writeUsart(stri);
+	detectReaderVersion();
+	_delay_ms(3000);
 	
-	byte = mfrc522_read(ComIEnReg);
-	mfrc522_write(ComIEnReg,byte|0x20);
-	byte = mfrc522_read(DivIEnReg);
-	mfrc522_write(DivIEnReg,byte|0x80);
-	
-	_delay_ms(1500);
-	
+	char buffer[64];
 	while(1){
-		byte = mfrc522_request(PICC_REQALL,str);
-		sprintf(stri, "%d\n", byte);
-		writeUsart(stri);
+		// request information about any tag in range of the antenna
+		status = mfrc522_request(PICC_REQALL,str);
+		usart_puts("Waiting...\n");
+		
+		if(status == CARD_FOUND) {
+			// if card is found, try to fetch card id number
+			status = mfrc522_get_card_serial(str);
+			
+			if(status == CARD_FOUND) {
+				// send id number (as hex characters) through USART interface
+				usart_puts(":");
+				for(uint8_t i = 0; i < 5; ++i) {
+					usart_hex(str[i]);
+				}
+				usart_puts("\n");
+			}
+			else {
+				usart_puts("Error reading serial!\n");
+			}
+			_delay_ms(2500);
+		}
+		
+		// Test for a tag every 1000ms
 		_delay_ms(1000);
 	}
 	

@@ -20,8 +20,11 @@
  * 
  * 
  */
-#include <mfrc522.h>
-#include <spi.h>
+#define F_CPU 7372800UL
+#include "mfrc522.h"
+#include "spi.h"
+#include <util/delay.h>
+
 
 
 void mfrc522_init()
@@ -45,19 +48,21 @@ void mfrc522_init()
 
 void mfrc522_write(uint8_t reg, uint8_t data)
 {
-	ENABLE_CHIP();
+	SS_ENABLE();
+	_delay_us(100);
 	spi_transmit((reg<<1)&0x7E);
 	spi_transmit(data);
-	DISABLE_CHIP();
+	SS_DISABLE();
 }
 
 uint8_t mfrc522_read(uint8_t reg)
 {
 	uint8_t data;	
-	ENABLE_CHIP();
+	SS_ENABLE();
+	_delay_us(100);
 	spi_transmit(((reg<<1)&0x7E)|0x80);
 	data = spi_transmit(0x00);
-	DISABLE_CHIP();
+	SS_DISABLE();
 	return data;
 }
 
@@ -71,7 +76,7 @@ uint8_t	mfrc522_request(uint8_t req_mode, uint8_t * tag_type)
 	uint8_t  status;  
 	uint32_t backBits;//The received data bits
 
-	mfrc522_write(BitFramingReg, 0x07);//TxLastBists = BitFramingReg[2..0]	???
+	mfrc522_write(BitFramingReg, 0x07); //TxLastBists = BitFramingReg[2..0]	???
 	
 	tag_type[0] = req_mode;
 	status = mfrc522_to_card(Transceive_CMD, tag_type, 1, tag_type, &backBits);
@@ -201,8 +206,7 @@ uint8_t mfrc522_to_card(uint8_t cmd, uint8_t *send_data, uint8_t send_data_len, 
 }
 
 
-uint8_t mfrc522_get_card_serial(uint8_t * serial_out)
-{
+uint8_t mfrc522_get_card_serial(uint8_t * serial_out) {
 	uint8_t status;
     uint8_t i;
 	uint8_t serNumCheck=0;
