@@ -10,5 +10,3 @@ spi.c
 
 usart.c
 
-utility.c
-

@@ -41,7 +41,6 @@ void detectReaderVersion() {
 
 int main()
 {
-	uint8_t byte = 0;
 	uint8_t str[16];
 	// used for storing status after communication with the reader
 	uint8_t status;
@@ -56,13 +55,11 @@ int main()
 	_delay_ms(10);
 	
 	detectReaderVersion();
-	_delay_ms(3000);
+	_delay_ms(1000);
 	
-	char buffer[64];
 	while(1){
 		// request information about any tag in range of the antenna
 		status = mfrc522_request(PICC_REQALL,str);
-		usart_puts("Waiting...\n");
 		
 		if(status == CARD_FOUND) {
 			// if card is found, try to fetch card id number
@@ -70,16 +67,14 @@ int main()
 			
 			if(status == CARD_FOUND) {
 				// send id number (as hex characters) through USART interface
-				usart_puts(":");
 				for(uint8_t i = 0; i < 5; ++i) {
 					usart_hex(str[i]);
 				}
-				usart_puts("\n");
 			}
 			else {
 				usart_puts("Error reading serial!\n");
 			}
-			_delay_ms(2500);
+			_delay_ms(1000);
 		}
 		
 		// Test for a tag every 1000ms
